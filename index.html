@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+<meta charset="UTF-8">
+<title>اختبار ديني تفاعلي – من إعداد المحامي ماجد الحلو</title>
+<style>
+body { font-family: Arial, sans-serif; background: #fdf6e3; text-align: center; padding: 20px;}
+h2 { color: #2c3e50; margin-bottom: 10px; }
+#author { font-size: 16px; color: #7f8c8d; margin-bottom: 20px; }
+#question { font-size: 20px; margin: 20px 0; }
+.options { display: flex; flex-direction: column; align-items: center; gap: 10px; }
+button.option { width: 300px; padding: 10px; font-size: 16px; border-radius: 8px; cursor: pointer; border: none; background: #3498db; color: white; transition: 0.3s; }
+button.option:hover { background: #2980b9; }
+#timer { font-size: 18px; color: #e74c3c; margin-top: 15px; }
+#result { font-size: 20px; color: #2ecc71; margin-top: 20px; }
+</style>
+</head>
+<body>
+
+<h2>اختبار ديني تفاعلي</h2>
+<div id="author">من إعداد المحامي ماجد الحلو</div>
+
+<div id="question"></div>
+<div class="options" id="options"></div>
+<div id="timer"></div>
+<div id="result"></div>
+
+<script>
+const questions = [
+  { q: "ما هي أول سورة في القرآن؟", img: "", options: ["الفاتحة", "البقرة", "آل عمران", "النساء"], answer: 0 },
+  { q: "أيها من أسماء الله الحسنى؟", img: "", options: ["الرحمن", "الكسلان", "الخباز", "المدير"], answer: 0 },
+  { q: "ما هي الصلاة المفروضة خمس مرات يومياً؟", img: "", options: ["الفجر", "الظهر", "العصر", "جميع ما ذكر"], answer: 3 },
+  { q: "ما هو الركن الثاني من أركان الإسلام؟", img: "", options: ["الشهادة", "الصلاة", "الزكاة", "الحج"], answer: 0 },
+  { q: "أي من هذه الكلمات تعني 'سبحان الله'؟", img: "", options: ["سبحان الله", "الحمد لله", "لا إله إلا الله", "الله أكبر"], answer: 0 },
+  { q: "ما هو الكتاب المنزل على النبي محمد ﷺ؟", img: "", options: ["الإنجيل", "التوراة", "القرآن", "الزبور"], answer: 2 },
+  { q: "ما هو الركن الرابع من أركان الإسلام؟", img: "", options: ["الحج", "الزكاة", "الصوم", "الشهادة"], answer: 2 },
+  { q: "ما هي أذكار الصباح؟", img: "", options: ["أدعية قبل النوم", "أدعية الفجر", "أذكار الصباح", "دعاء الإفطار"], answer: 2 }
+];
+
+let currentQ = 0;
+let score = 0;
+let timer;
+let timeLeft = 45; // ثانية لكل سؤال
+
+const questionDiv = document.getElementById("question");
+const optionsDiv = document.getElementById("options");
+const timerDiv = document.getElementById("timer");
+const resultDiv = document.getElementById("result");
+
+function startQuestion() {
+  if(currentQ >= questions.length) {
+    questionDiv.textContent = "";
+    optionsDiv.innerHTML = "";
+    timerDiv.textContent = "";
+    resultDiv.textContent = "انتهى الاختبار! عدد الإجابات الصحيحة: " + score + "/" + questions.length;
+    return;
+  }
+
+  const q = questions[currentQ];
+  questionDiv.textContent = (currentQ+1) + ". " + q.q;
+  optionsDiv.innerHTML = "";
+  q.options.forEach((opt, index) => {
+    const btn = document.createElement("button");
+    btn.classList.add("option");
+    btn.textContent = opt;
+    btn.onclick = () => checkAnswer(index);
+    optionsDiv.appendChild(btn);
+  });
+
+  timeLeft = 45;
+  timerDiv.textContent = "الوقت المتبقي: " + timeLeft + " ثانية";
+  clearInterval(timer);
+  timer = setInterval(() => {
+    timeLeft--;
+    timerDiv.textContent = "الوقت المتبقي: " + timeLeft + " ثانية";
+    if(timeLeft <= 0) {
+      clearInterval(timer);
+      currentQ++;
+      startQuestion();
+    }
+  }, 1000);
+}
+
+function checkAnswer(selected) {
+  const correct = questions[currentQ].answer;
+  if(selected === correct) score++;
+  clearInterval(timer);
+  currentQ++;
+  startQuestion();
+}
+
+// ابدأ الاختبار
+startQuestion();
+</script>
+</body>
+</html>
